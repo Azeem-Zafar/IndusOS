@@ -37,7 +37,7 @@ void draw_ui() {
         vga_put(0, i, ' ', 0x1F);
 
     /* Title */
-    char* title = "  AZEEM OS v0.6  |  Pakistan  |  Banaya: Azeem Zafar";
+    char* title = "  INDUS OS v0.6  |  Pakistan  |  Banaya: Azeem Zafar";
     for(i = 0; title[i]; i++)
         vga_put(0, i, title[i], 0x1F);
 
@@ -71,7 +71,7 @@ void draw_ui() {
     for(i = 0; i < 80; i++)
         vga_put(24, i, ' ', 0x70);
 
-    char* status = " AzeemOS Ready | Type 'help' for commands | Pakistan 🇵🇰";
+    char* status = " IndusOS Ready | Type 'help' for commands | Pakistan 🇵🇰";
     for(i = 0; status[i] && i < 79; i++)
         vga_put(24, i, status[i], 0x70);
 
@@ -208,11 +208,11 @@ void compare_and_run(char* cmd) {
     if(str_equal(cmd, "name")) {
         print_string("\n  Developer : Azeem Zafar\n", 0x1B);
         print_string("  Country   : Pakistan\n", 0x1B);
-        print_string("  Project   : AzeemOS\n", 0x1B);
+        print_string("  Project   : IndusOS\n", 0x1B);
         return;
     }
     if(str_equal(cmd, "version")) {
-        print_string("\n  AzeemOS v0.6 - Better UI Edition\n", 0x1E);
+        print_string("\n  IndusOS v0.6 - Better UI Edition\n", 0x1E);
         print_string("  Built from scratch in Assembly + C\n", 0x1F);
         return;
     }
@@ -303,7 +303,7 @@ void kernel_main() {
     draw_ui();
     cursor_row = 6;
     cursor_col = 2;
-    print_string("  Khush Amdeed! AzeemOS mein.\n", 0x1A);
+    print_string("  Khush Amdeed! IndusOS mein.\n", 0x1A);
     show_prompt();
 
     while(1) {
