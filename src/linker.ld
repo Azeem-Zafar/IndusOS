@@ -1,11 +1,9 @@
-ENTRY(kernel_main)
+ENTRY(_start)
 SECTIONS {
-    . = 0x1000;
-    .text : {
-        *(.text.kernel_main)
-        *(.text)
-    }
-    .data : { *(.data) }
-    .rodata : { *(.rodata) }
-    .bss : { *(.bss) }
+    . = 0x100000;
+    .multiboot : { *(.multiboot) }
+    .text : { *(.text*) }
+    .data : { *(.data*) }
+    .rodata : { *(.rodata*) }
+    .bss : { *(.bss*) }
 }

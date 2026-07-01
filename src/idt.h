@@ -17,19 +17,15 @@ struct idt_entry idt[IDT_ENTRIES];
 struct idt_ptr idtp;
 
 void idt_set_gate(unsigned char num, unsigned int base, unsigned short sel, unsigned char flags) {
-    idt[num].base_low  = (base & 0xFFFF);
+    idt[num].base_low = base & 0xFFFF;
     idt[num].base_high = (base >> 16) & 0xFFFF;
-    idt[num].selector  = sel;
-    idt[num].zero      = 0;
-    idt[num].flags     = flags;
+    idt[num].selector = sel;
+    idt[num].zero = 0;
+    idt[num].flags = flags;
 }
 
 void idt_install() {
-    int i;
-    for(i = 0; i < IDT_ENTRIES; i++) {
-        idt_set_gate(i, 0, 0x08, 0x8E);
-    }
-    idtp.limit = (sizeof(struct idt_entry) * IDT_ENTRIES) - 1;
-    idtp.base  = (unsigned int) &idt;
-    __asm__("lidt %0" : : "m" (idtp));
+    idtp.limit = sizeof(struct idt_entry) * IDT_ENTRIES - 1;
+    idtp.base = (unsigned int)&idt;
+    __asm__ __volatile__("lidt %0" : : "m"(idtp));
 }

@@ -1,19 +1,22 @@
-all: os.img
+all: os.iso
 
-boot/boot.bin:
-	nasm -f bin boot/boot.asm -o boot/boot.bin
+src/multiboot.o:
+	nasm -f elf32 src/multiboot.asm -o src/multiboot.o
 
 src/kernel.o:
 	gcc -m32 -ffreestanding -fno-pie -c src/kernel.c -o src/kernel.o
 
-src/kernel.bin: src/kernel.o
-	ld -m elf_i386 -T src/linker.ld -o src/kernel.bin src/kernel.o --oformat binary
+src/kernel.bin: src/multiboot.o src/kernel.o
+	ld -m elf_i386 -T src/linker.ld -o src/kernel.bin src/multiboot.o src/kernel.o
 
-os.img: boot/boot.bin src/kernel.bin
-	cat boot/boot.bin src/kernel.bin > os.img
+iso/boot/kernel.bin: src/kernel.bin
+	cp src/kernel.bin iso/boot/kernel.bin
 
-run: os.img
-	qemu-system-x86_64 -drive format=raw,file=os.img,if=floppy
+os.iso: iso/boot/kernel.bin
+	grub-mkrescue -o os.iso iso
+
+run: os.iso
+	qemu-system-x86_64 -cdrom os.iso
 
 clean:
-	rm -f boot/boot.bin src/kernel.o src/kernel.bin os.img
+	rm -f src/multiboot.o src/kernel.o src/kernel.bin iso/boot/kernel.bin os.iso

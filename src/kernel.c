@@ -1,22 +1,20 @@
 #include "fs.h"
 #include "mm.h"
 
-unsigned short* vidmem = (unsigned short*) 0xB8000;
+volatile unsigned short* vidmem = (volatile unsigned short*) 0xB8000;
 int cursor_row = 0;
 int cursor_col = 0;
 
 void clear_screen() {
     int i;
-    for(i = 0; i < 80 * 25; i++) {
+    for(i = 0; i < 80*25; i++)
         vidmem[i] = (0x1F << 8) | ' ';
-    }
     cursor_row = 0;
     cursor_col = 0;
 }
 
 void print_char(char c, char color) {
     if(c == '\n') { cursor_row++; cursor_col = 0; return; }
-    if(c == '\r') { cursor_col = 0; return; }
     int offset = cursor_row * 80 + cursor_col;
     vidmem[offset] = (color << 8) | c;
     cursor_col++;
@@ -29,8 +27,7 @@ void print_string(char* str, char color) {
 }
 
 void print_at(char* str, int col, int row, char color) {
-    cursor_col = col;
-    cursor_row = row;
+    cursor_col = col; cursor_row = row;
     print_string(str, color);
 }
 
@@ -91,8 +88,7 @@ void compare_and_run(char* cmd) {
     if(str_equal(cmd, "clear")) {
         clear_screen();
         print_at("AzeemOS v0.5", 0, 0, 0x1E);
-        cursor_row = 2;
-        cursor_col = 0;
+        cursor_row = 2; cursor_col = 0;
         return;
     }
     if(str_equal(cmd, "name")) {
@@ -122,24 +118,15 @@ void compare_and_run(char* cmd) {
     if(str_starts(cmd, "create ")) {
         char* fname = cmd + 7;
         int result = fs_create(fname);
-        if(result >= 0) {
-            print_string("File bani: ", 0x1A);
-            print_string(fname, 0x1F);
-            print_string("\n", 0x1F);
-        } else {
-            print_string("Error!\n", 0x1C);
-        }
+        if(result >= 0) { print_string("File bani!\n", 0x1A); }
+        else { print_string("Error!\n", 0x1C); }
         return;
     }
     if(str_starts(cmd, "read ")) {
         char* fname = cmd + 5;
         char* data = fs_read(fname);
-        if(data) {
-            print_string(data, 0x1F);
-            print_string("\n", 0x1F);
-        } else {
-            print_string("File nahi mili!\n", 0x1C);
-        }
+        if(data) { print_string(data, 0x1F); print_string("\n", 0x1F); }
+        else { print_string("File nahi mili!\n", 0x1C); }
         return;
     }
     if(str_starts(cmd, "delete ")) {
@@ -152,10 +139,7 @@ void compare_and_run(char* cmd) {
         char fname[32];
         char* rest = cmd + 6;
         int i = 0;
-        while(rest[i] != ' ' && rest[i] != 0 && i < 31) {
-            fname[i] = rest[i];
-            i++;
-        }
+        while(rest[i] != ' ' && rest[i] != 0 && i < 31) { fname[i] = rest[i]; i++; }
         fname[i] = 0;
         char* text = rest + i + 1;
         fs_write(fname, text);
@@ -178,10 +162,7 @@ void compare_and_run(char* cmd) {
         char* sizestr = cmd + 6;
         unsigned int size = 0;
         int i = 0;
-        while(sizestr[i] != 0) {
-            size = size * 10 + (sizestr[i] - '0');
-            i++;
-        }
+        while(sizestr[i] != 0) { size = size*10 + (sizestr[i]-'0'); i++; }
         void* ptr = kmalloc(size);
         if(ptr) print_string("Allocated!\n", 0x1A);
         else print_string("Error!\n", 0x1C);
@@ -201,7 +182,6 @@ void process_input() {
 void kernel_main() {
     fs_init();
     mm_init();
-
     clear_screen();
     print_at("===================================================", 0, 0, 0x1E);
     print_at("         AZEEM OS v0.5  |  Pakistan               ", 0, 1, 0x1F);
