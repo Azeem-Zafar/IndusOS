@@ -1,20 +1,19 @@
-# AzeemOS
-First Pakistani OS built from scratch in Assembly + C
+# AzeemOS 🇵🇰
+
+Pakistan ka pehla custom OS — scratch se banaya gaya!
 
 ## Features
-- Custom Bootloader
+- GRUB Bootloader
 - 32-bit Protected Mode Kernel
 - VGA Driver
-- Keyboard Driver  
-- File System
-- Memory Manager
+- Keyboard Driver
+- File System (create/read/write/delete)
+- Memory Manager (kmalloc)
+- Interactive Shell
 
-## Built by
-Azeem Zafar — Pakistan 🇵🇰
+## How to Run
+make
+qemu-system-x86_64 -cdrom os.iso -m 64 -boot d -vga std
 
-## How to run
-nasm -f bin boot/boot.asm -o boot/boot.bin
-gcc -m32 -ffreestanding -fno-pie -c src/kernel.c -o src/kernel.o
-ld -m elf_i386 -T src/linker.ld -o src/kernel.bin src/kernel.o --oformat binary
-cat boot/boot.bin src/kernel.bin > os.img
-qemu-system-x86_64 -fda os.img
+## Developer
+Azeem Zafar — Pakistan
