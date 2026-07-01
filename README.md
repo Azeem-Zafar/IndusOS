@@ -1,4 +1,4 @@
-# AzeemOS 🇵🇰
+# IndusOS 🇵🇰
 
 Pakistan ka pehla custom OS — scratch se banaya gaya!
 
